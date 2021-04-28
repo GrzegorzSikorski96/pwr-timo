@@ -1,7 +1,16 @@
 <template>
   <v-container>
-    <Parameters v-model="parameters"></Parameters>
-    <FunctionComponent class="mt-5" :variables="parameters.variables"></FunctionComponent>
+    <v-row>
+      <v-col class="col-6 col-sm-12 col-md-6">
+        <Parameters class="" v-model="parameters"></Parameters>
+        <FunctionComponent class="mt-5" :variables="parameters.variables"></FunctionComponent>
+      </v-col>
+
+      <v-col class="col-12 col-sm-12 col-md-6">
+      </v-col>
+    </v-row>
+
+
   </v-container>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <v-card class="col-12 col-sm-12 col-md-6">
+  <v-card>
     <v-card-title class="ml-md-n2">
       Parametry funkcji
     </v-card-title>
