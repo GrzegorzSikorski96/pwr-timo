@@ -1,13 +1,14 @@
 <template>
   <v-container>
-    <v-row>
+    <v-row class="mt-2">
       <v-col class="col-6 col-sm-12 col-md-6">
         <Parameters v-model="parameters"></Parameters>
-        <Function class="mt-5" :variables="parameters.variables" v-model="baseVariables" v-if="baseVariables"></Function>
+        <BaseFunction class="my-5" :variables="parameters.variables" v-model="base"></BaseFunction>
+        <Limitations :m="parameters.limitations" :n="parameters.variables" v-model="limitations"></Limitations>
       </v-col>
 
       <v-col class="col-12 col-sm-12 col-md-6">
-        <Limitations :m="parameters.limitations" :n="parameters.variables"></Limitations>
+        <Summary :base="base" :limitations="limitations"></Summary>
       </v-col>
     </v-row>
   </v-container>
@@ -15,19 +16,21 @@
 
 <script>
 import Parameters from "@/components/Parameters";
-import Function from "@/components/Function";
 import Limitations from "@/components/Limitations";
+import BaseFunction from "@/components/BaseFunction";
+import Summary from "@/components/Summary";
 
 export default {
   name: 'Home',
   components: {
+    Summary,
+    BaseFunction,
     Limitations,
-    Function,
     Parameters,
   },
   data: () => ({
     parameters: {},
-    baseVariables: [],
+    base: [],
     limitations: [],
   }),
 }
