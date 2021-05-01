@@ -20,9 +20,22 @@
         </v-card-title>
         <v-card-text>
           <span class="d-block" v-for="(row, key) in limitations" v-bind:key="key">
-            <span v-for="(col, keyk) in row" v-bind:key="keyk">
-              <span v-if="col">
-                {{ col }}x<sub>{{ keyk + 1 }}</sub><span v-if="keyk !== row.length-1">+</span>
+            <span v-for="(col, colKey) in row" v-bind:key="colKey">
+              <span>
+                <template v-if="colKey === row.length-1">
+                  <template v-if="col === 'leq'">
+                    ≤
+                  </template>
+                  <template v-else>
+                    ≥
+                  </template>
+                </template>
+                <template v-if="colKey === row.length">
+                  {{ col }}
+                </template>
+                <template v-if="colKey < row.length-2">
+                  {{ col }}x<sub>{{ colKey + 1 }}</sub><span v-if="colKey <= row.length-3">+</span>
+                </template>
               </span>
             </span>
           </span>

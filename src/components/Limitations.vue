@@ -7,7 +7,7 @@
       <v-row align="center" class="ma-1" v-for="i in m" v-bind:key="i">
         Ograniczenie {{ i }}
         <v-sheet class="align-center col-12" outlined>
-          <Function class="ml-1" :variables="n" v-model="limitations[i-1]">
+          <Function class="ml-1 align-center" :variables="n" v-model="limitations[i-1]" :limitation="true">
           </Function>
         </v-sheet>
       </v-row>

@@ -3,7 +3,7 @@
                 required
                 v-model="x"
   >
-    <template slot="label">x<sub>{{ number }}</sub></template>
+    <template slot="label" v-if="number">x<sub>{{ number }}</sub></template>
   </v-text-field>
 </template>
 
@@ -18,7 +18,7 @@ export default {
   }),
   watch: {
     x: function (value) {
-      this.$emit("input", value);
+      this.$emit("input", Number(value));
     },
   },
 }
