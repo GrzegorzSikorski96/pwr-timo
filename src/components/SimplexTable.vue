@@ -3,7 +3,7 @@
     <thead>
     <tr>
       <th></th>
-      <th v-for="col in legend.cols" v-bind:key="col">
+      <th v-for="col in legend.columns" v-bind:key="col">
         <template v-if="col !== 'f(x)'">
           x<sub>{{ col }}</sub>
         </template>
