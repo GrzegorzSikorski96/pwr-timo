@@ -23,6 +23,7 @@ import Limitations from "@/components/Limitations";
 import BaseFunction from "@/components/BaseFunction";
 import SimplexTable from "@/components/SimplexTable";
 import * as Gaussian from "@/helpers/gaussian";
+import * as Simplex from "@/helpers/simplex";
 
 export default {
   name: 'Home',
@@ -34,8 +35,8 @@ export default {
   },
   data: () => ({
     parameters: {
-      variables: Number,
-      limitation: Number,
+      variables: 1,
+      limitation: 2,
     },
     base: [],
     limitations: [],
@@ -46,6 +47,9 @@ export default {
       columns: [],
     },
   }),
+  beforeCreate() {
+    this.loadTest();
+    },
   methods: {
     makeLegend: function (columns, rows) {
       for (let i = 0; i < columns; i++) {
@@ -101,10 +105,12 @@ export default {
     },
     calculate: function () {
       this.createSimplexMatrix();
-      let column = this.gaussianSelectColumn();
-      let row = this.gaussianSelectRow(column);
+
+      let column = Simplex.selectColumnInRow(this.matrix);
+      let row = Simplex.selectRow(this.matrix, column);
+
       this.gaussian(row, column);
-      this.changeLegendRowWithColumn(row, column);
+      this.legend = Simplex.changeLegendRowWithColumn(this.legend, row, column);
     },
     gaussian: function (row, column) {
       let yrk = this.matrix[row][column];
@@ -119,7 +125,7 @@ export default {
         for (let j = 0; j < this.matrix[row].length; j++) {
           if (i !== row) {
             if (j !== column) {
-              this.matrix[i][j] = Gaussian.outisdeSelected(this.matrix[i][j], c[i], r[j], yrk);
+              this.matrix[i][j] = Gaussian.outsideSelected(this.matrix[i][j], c[i], r[j], yrk);
             } else {
               this.matrix[i][j] = Gaussian.inColumn(this.matrix[i][j], yrk);
             }
@@ -132,40 +138,6 @@ export default {
           }
         }
       }
-    },
-    gaussianSelectColumn() {
-      let min = this.matrix[0][0];
-      let column = 0;
-      for (let i = 0; i < this.matrix.length; i++) {
-        if (this.matrix[0][i] < min) {
-          min = this.matrix[0][i];
-          column = i;
-        }
-      }
-
-      return column;
-    },
-    gaussianSelectRow(column) {
-      let min = this.calculateRowValue(this.matrix[1][0], this.matrix[1][column]);
-      let row = 1;
-
-      for (let i = 1; i < this.matrix.length; i++) {
-        if (this.calculateRowValue(this.matrix[i][0], this.matrix[i][column]) < min && this.calculateRowValue(this.matrix[i][0], this.matrix[i][column]) > 0) {
-          min = this.calculateRowValue(this.matrix[i][0], this.matrix[i][column]);
-          row = i;
-        }
-      }
-
-      return row;
-    },
-    calculateRowValue(value, colValue) {
-      return value / colValue;
-    },
-    changeLegendRowWithColumn(row, column) {
-      let tmp = this.legend.rows[row];
-
-      this.legend.rows[row] = this.legend.columns[column];
-      this.legend.columns[column] = tmp;
     },
     loadTest: function () {
       this.parameters = {"variables": 2, "limitations": 3};

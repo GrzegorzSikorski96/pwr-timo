@@ -1,4 +1,4 @@
-export function outisdeSelected(yij, yik, yrj, yrk) {
+export function outsideSelected(yij, yik, yrj, yrk) {
     return Number((yij - ((yik * yrj) / yrk)).toFixed(3));
 }
 
