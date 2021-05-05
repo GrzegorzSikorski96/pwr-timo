@@ -24,6 +24,7 @@ export default {
   props: {
     m: Number,
     n: Number,
+    value: Array,
   },
   data: function () {
     return {
@@ -33,7 +34,10 @@ export default {
   watch: {
     limitations: function () {
       this.$emit("input", this.limitations)
-    }
+    },
+    value: function () {
+      this.limitations = this.value;
+    },
   }
 }
 </script>

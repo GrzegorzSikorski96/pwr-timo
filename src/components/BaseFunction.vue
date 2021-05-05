@@ -22,6 +22,7 @@ export default {
   components: {Function},
   props: {
     variables: Number,
+    value: Array,
   },
   data: () => ({
     baseFunction: [],
@@ -29,7 +30,10 @@ export default {
   watch: {
     baseFunction: function () {
       this.$emit("input", this.baseFunction);
-    }
+    },
+    value: function (val) {
+      this.baseFunction = val;
+    },
   }
 }
 </script>

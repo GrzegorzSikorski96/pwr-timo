@@ -31,6 +31,7 @@
 <script>
 export default {
   name: 'Parameters',
+  props: ['value'],
   data: () => ({
     parameters: {
       variables: 1,
@@ -43,8 +44,14 @@ export default {
   methods: {
     update: function () {
       this.$emit("input", this.parameters)
-    }
+    },
   },
+  watch: {
+    value: function (val) {
+      this.parameters.variables = val.variables;
+      this.parameters.limitations = val.limitations;
+    },
+  }
 }
 </script>
 

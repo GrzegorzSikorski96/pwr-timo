@@ -25,16 +25,18 @@ export default {
   props: {
     variables: Number,
     limitation: Boolean,
+    value: Array,
   },
-  data: function () {
-    return {
-      values: [],
-    };
-  },
+  data: () => ({
+    values: [],
+  }),
   watch: {
     values: function () {
       this.$emit("input", this.values);
-    }
+    },
+    value: function () {
+      this.values = this.value;
+    },
   }
 }
 </script>

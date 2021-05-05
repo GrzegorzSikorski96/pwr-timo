@@ -12,6 +12,7 @@ export default {
   name: "VariableInput",
   props: {
     number: Number,
+    value: Number,
   },
   data: () => ({
     x: null,
@@ -19,6 +20,9 @@ export default {
   watch: {
     x: function (value) {
       this.$emit("input", Number(value));
+    },
+    value: function (val) {
+      this.x = Number(val);
     },
   },
 }

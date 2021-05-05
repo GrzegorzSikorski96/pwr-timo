@@ -37,7 +37,7 @@ export default {
   data: () => ({
     parameters: {
       variables: 1,
-      limitation: 2,
+      limitations: 2,
     },
     base: [],
     limitations: [],
@@ -48,9 +48,6 @@ export default {
       columns: [],
     },
   }),
-  beforeCreate() {
-    this.loadTest();
-  },
   methods: {
     createSimplexMatrix: function () {
       this.render = false;
