@@ -24,6 +24,7 @@ import BaseFunction from "@/components/BaseFunction";
 import SimplexTable from "@/components/SimplexTable";
 import * as Gaussian from "@/helpers/gaussian";
 import * as Simplex from "@/helpers/simplex";
+import * as Matrix from "@/helpers/matrix"
 
 export default {
   name: 'Home',
@@ -49,25 +50,8 @@ export default {
   }),
   beforeCreate() {
     this.loadTest();
-    },
+  },
   methods: {
-    makeLegend: function (columns, rows) {
-      for (let i = 0; i < columns; i++) {
-        if (i === 0) {
-          this.legend.columns[i] = "f(x)";
-        } else {
-          this.legend.columns[i] = i;
-        }
-      }
-
-      for (let i = 0; i < rows; i++) {
-        if (i === 0) {
-          this.legend.rows[i] = "z";
-        } else {
-          this.legend.rows[i] = "U" + i;
-        }
-      }
-    },
     createSimplexMatrix: function () {
       this.render = false;
       let matrix = new Array(this.parameters.limitations + 1).fill(0).map(() => new Array((this.parameters.variables * 2) + 1).fill(0))
@@ -99,7 +83,7 @@ export default {
         }
       }
 
-      this.makeLegend(matrix[0].length, matrix.length);
+      this.legend = Matrix.makeLegend(matrix.length, matrix[0].length);
       this.matrix = matrix;
       this.render = true;
     },
@@ -113,10 +97,10 @@ export default {
       this.legend = Simplex.changeLegendRowWithColumn(this.legend, row, column);
     },
     gaussian: function (row, column) {
-      let yrk = this.matrix[row][column];
-      let r = this.matrix[row];
+      let yrk = this.matrix[row][column]; //copy of value on selected cross. Remove after add reference to previous iteration
+      let r = this.matrix[row]; //copy of values in of selected row for future calculations. Remove after add reference to previous iteration
 
-      let c = [];
+      let c = []; //copy of values in of selected column for future calculations. Remove after add reference to previous iteration
       for (let i = 0; i < this.matrix.length; i++) {
         c[i] = this.matrix[i][column];
       }
