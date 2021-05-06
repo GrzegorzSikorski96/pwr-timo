@@ -3,7 +3,7 @@ export function selectColumnInRow(matrix, row = 0) {
     let column = 1;
 
     for (let i = 1; i < matrix.length; i++) {
-        if (matrix[row][i] < min) {
+        if (matrix[row][i] < min && matrix[row][i] < 0) {
             min = matrix[row][i];
             column = i;
         }
@@ -37,4 +37,39 @@ export function changeLegendRowWithColumn(legend, row, column) {
     legend.columns[column] = tmp;
 
     return legend;
+}
+
+export function createSimplexMatrix(base, limitations, parameters) {
+    // let matrix = new Array(this.parameters.limitations + 1).fill(0).map(() => new Array((this.parameters.variables * 2) + 1).fill(0))
+    let matrix = new Array(parameters.limitations + 1).fill(0).map(() => new Array((parameters.variables * 2) + 1).fill(0))
+
+    for (let i = 0; i < matrix.length; i++) {
+        let step = 1;
+        for (let j = 0; j < matrix[i].length; j++) {
+            if (i === 0 && j === 0) {
+                matrix[i][j] = 0;
+            }
+
+            if (j % 2 !== 0) {
+                if (i === 0) {
+                    matrix[i][j] = -base[j - step];
+                    step++;
+                } else {
+                    matrix[i][j] = limitations[i - 1][j - step];
+                    step++;
+                }
+            } else {
+                if (j > 0) {
+                    matrix[i][j] = -matrix[i][j - 1];
+                } else {
+                    if (i > 0) {
+                        // matrix[i][j] = limitations[i - 1][this.parameters.variables];
+                        matrix[i][j] = limitations[i - 1][base.length];
+                    }
+                }
+            }
+        }
+    }
+
+    return matrix;
 }

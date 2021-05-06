@@ -11,7 +11,10 @@
         <v-btn @click="loadTest">Wczytaj testowe</v-btn>
         <v-btn @click="createSimplexMatrix">Generuj tabele</v-btn>
         <v-btn @click="calculate()">Oblicz</v-btn>
-        <SimplexTable v-if="render" :legend="legend" :table="matrix"></SimplexTable>
+          <SimplexTable v-for="(iteration, key) in iterations" :key="key" :legend="iteration.legend"
+                        :table="iteration.matrix">
+
+          </SimplexTable>
       </v-col>
     </v-row>
   </v-container>
@@ -41,6 +44,13 @@ export default {
     },
     base: [],
     limitations: [],
+    iterations: [{
+      matrix: [],
+      legend: {
+        rows: [],
+        columns: [],
+      }
+    }],
     matrix: [],
     render: false,
     legend: {
@@ -51,47 +61,36 @@ export default {
   methods: {
     createSimplexMatrix: function () {
       this.render = false;
-      let matrix = new Array(this.parameters.limitations + 1).fill(0).map(() => new Array((this.parameters.variables * 2) + 1).fill(0))
 
-      for (let i = 0; i < matrix.length; i++) {
-        let step = 1;
-        for (let j = 0; j < matrix[i].length; j++) {
-          if (i === 0 && j === 0) {
-            matrix[i][j] = 0;
-          }
+      let matrix = Simplex.createSimplexMatrix(this.base, this.limitations, this.parameters);
+      let legend = Matrix.makeLegend(matrix.length, matrix[0].length);
 
-          if (j % 2 !== 0) {
-            if (i === 0) {
-              matrix[i][j] = -this.base[j - step];
-              step++;
-            } else {
-              matrix[i][j] = this.limitations[i - 1][j - step];
-              step++;
-            }
-          } else {
-            if (j > 0) {
-              matrix[i][j] = -matrix[i][j - 1];
-            } else {
-              if (i > 0) {
-                matrix[i][j] = this.limitations[i - 1][this.parameters.variables];
-              }
-            }
-          }
-        }
-      }
+      this.iterations[0] = {matrix: matrix, legend: legend};
+      //this.iterations.legend = legend;
 
-      this.legend = Matrix.makeLegend(matrix.length, matrix[0].length);
-      this.matrix = matrix;
       this.render = true;
     },
     calculate: function () {
-      this.createSimplexMatrix();
 
-      let column = Simplex.selectColumnInRow(this.matrix);
-      let row = Simplex.selectRow(this.matrix, column);
+      let column = Simplex.selectColumnInRow(this.iterations[this.iterations.length - 1].matrix);
+      let row = Simplex.selectRow(this.iterations[this.iterations.length - 1].matrix, column);
 
-      this.gaussian(row, column);
-      this.legend = Simplex.changeLegendRowWithColumn(this.legend, row, column);
+      console.log(column);
+      console.log(row);
+      // this.gaussian(row, column);
+      let nowsza = Gaussian.calculate(this.iterations[this.iterations.length - 1].matrix, row, column)
+      this.iterations.push({
+        matrix: nowsza,
+        legend: Simplex.changeLegendRowWithColumn(this.iterations[this.iterations.length - 1].legend, row, column)
+      })
+
+      // this.createSimplexMatrix();
+      //
+      // let column = Simplex.selectColumnInRow(this.matrix);
+      // let row = Simplex.selectRow(this.matrix, column);
+      //
+      // this.gaussian(row, column);
+      // this.legend = Simplex.changeLegendRowWithColumn(this.legend, row, column);
     },
     gaussian: function (row, column) {
       let yrk = this.matrix[row][column]; //copy of value on selected cross. Remove after add reference to previous iteration
@@ -120,11 +119,14 @@ export default {
         }
       }
     },
-    loadTest: function () {
+    async setParameters() {
       this.parameters = {"variables": 2, "limitations": 3};
-
-      this.base = [2, 1];
-      this.limitations = [[1, 1, 5], [-1, 1, 0], [6, 2, 21]];
+    },
+    async loadTest() {
+      await this.setParameters().then(() => {
+        this.base = [2, 1];
+        this.limitations = [[1, 1, 5], [-1, 1, 0], [6, 2, 21]];
+      })
     },
   },
 }
