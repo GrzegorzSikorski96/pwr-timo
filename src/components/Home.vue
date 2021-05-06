@@ -5,6 +5,7 @@
         <Parameters v-model="parameters"></Parameters>
         <BaseFunction class="my-5" :variables="parameters.variables" v-model="base"></BaseFunction>
         <Limitations :m="parameters.limitations" :n="parameters.variables" v-model="limitations"></Limitations>
+        <base-function-test v-model="base"></base-function-test>
       </v-col>
 
       <v-col class="col-12 col-sm-12 col-md-6">
@@ -22,6 +23,7 @@ import Parameters from "@/components/Parameters";
 import Limitations from "@/components/Limitations";
 import BaseFunction from "@/components/BaseFunction";
 import SimplexTable from "@/components/SimplexTable";
+import BaseFunctionTest from "@/components/BaseFunction/BaseFunction";
 import * as Gaussian from "@/helpers/gaussian";
 import * as Simplex from "@/helpers/simplex";
 import * as Matrix from "@/helpers/matrix"
@@ -33,6 +35,7 @@ export default {
     BaseFunction,
     Limitations,
     Parameters,
+    BaseFunctionTest
   },
   data: () => ({
     parameters: {
