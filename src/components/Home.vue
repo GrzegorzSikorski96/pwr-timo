@@ -9,6 +9,7 @@
 
       <v-col class="col-12 col-sm-12 col-md-6">
         <v-btn @click="loadTest" class="v-btn--block mb-2">Wczytaj testowe</v-btn>
+        <v-btn @click="clear" class="v-btn--block mb-2">Czyść</v-btn>
         <v-btn @click="createSimplexMatrix" class="v-btn--block mb-2">Generuj tabele</v-btn>
         <v-btn @click="calculate()" class="v-btn--block mb-2">Oblicz</v-btn>
         <br>
@@ -74,7 +75,6 @@ export default {
       let legend = Matrix.makeLegend(matrix.length, matrix[0].length);
 
       this.iterations[0] = {matrix: matrix, legend: legend};
-      //this.iterations.legend = legend;
 
       this.render = true;
     },
@@ -136,6 +136,16 @@ export default {
         this.limitations = [[1, 1, 5], [-1, 1, 0], [6, 2, 21]];
       })
     },
+    clear: function () {
+      this.iterations = [{
+        matrix: [],
+        legend: {
+          rows: [],
+          columns: [],
+        }
+      }]
+      this.render = false;
+    }
   },
 }
 </script>
