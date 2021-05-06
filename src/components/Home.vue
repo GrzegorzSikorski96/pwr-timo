@@ -8,13 +8,21 @@
       </v-col>
 
       <v-col class="col-12 col-sm-12 col-md-6">
-        <v-btn @click="loadTest">Wczytaj testowe</v-btn>
-        <v-btn @click="createSimplexMatrix">Generuj tabele</v-btn>
-        <v-btn @click="calculate()">Oblicz</v-btn>
-          <SimplexTable v-for="(iteration, key) in iterations" :key="key" :legend="iteration.legend"
-                        :table="iteration.matrix">
+        <v-btn @click="loadTest" class="v-btn--block mb-2">Wczytaj testowe</v-btn>
+        <v-btn @click="createSimplexMatrix" class="v-btn--block mb-2">Generuj tabele</v-btn>
+        <v-btn @click="calculate()" class="v-btn--block mb-2">Oblicz</v-btn>
+        <br>
+        <template v-if="this.render">
+          <div v-for="(iteration, key) in iterations" :key="key" class="mb-4">
+            <div class="iteration-header d-flex">
+              Iteracja {{ key + 1 }}
+              <v-spacer/>
+              Optymalna wartość: {{ iteration.matrix[0][0] }}
+            </div>
 
-          </SimplexTable>
+            <SimplexTable :legend="iteration.legend" :table="iteration.matrix"/>
+          </div>
+        </template>
       </v-col>
     </v-row>
   </v-container>
@@ -131,3 +139,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.iteration-header {
+  border-bottom: grey 2px solid;
+}
+</style>
