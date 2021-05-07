@@ -7,8 +7,9 @@
       <v-row align="center" class="ma-1" v-for="i in m" v-bind:key="i">
         Ograniczenie {{ i }}
         <v-sheet class="align-center col-12" outlined>
-          <Function class="ml-1 align-center" :variables="n" v-model="limitations[i-1]" :limitation="true">
-          </Function>
+          <LimitationFunction class="mx-1 align-center" :variables="n" v-model="limitations[i-1]" :limitation="true">
+          </LimitationFunction>
+
         </v-sheet>
       </v-row>
     </v-card-text>
@@ -16,11 +17,11 @@
 </template>
 
 <script>
-import Function from "@/components/Function";
+import LimitationFunction from "@/components/LimitationFunction";
 
 export default {
   name: "Limitations",
-  components: {Function},
+  components: {LimitationFunction},
   props: {
     m: Number,
     n: Number,
@@ -28,7 +29,11 @@ export default {
   },
   data: function () {
     return {
-      limitations: [],
+      limitations: [{
+        sign: "leq",
+        variables: [],
+        value: null,
+      }],
     };
   },
   watch: {

@@ -39,8 +39,8 @@ export function changeLegendRowWithColumn(legend, row, column) {
     return legend;
 }
 
-export function createSimplexMatrix(base, limitations, parameters) {
-    let matrix = new Array(parameters.limitations + 1).fill(0).map(() => new Array((parameters.variables * 2) + 1).fill(0))
+export function createSimplexMatrix(base, limitations) {
+    let matrix = new Array(limitations.length + 1).fill(0).map(() => new Array((limitations[0].variables.length * 2) + 1).fill(0))
 
     for (let i = 0; i < matrix.length; i++) {
         let step = 1;
@@ -48,13 +48,12 @@ export function createSimplexMatrix(base, limitations, parameters) {
             if (i === 0 && j === 0) {
                 matrix[i][j] = 0;
             }
-
             if (j % 2 !== 0) {
                 if (i === 0) {
                     matrix[i][j] = -base[j - step];
                     step++;
                 } else {
-                    matrix[i][j] = limitations[i - 1][j - step];
+                    matrix[i][j] = limitations[i - 1].variables[j - step];
                     step++;
                 }
             } else {
@@ -62,7 +61,7 @@ export function createSimplexMatrix(base, limitations, parameters) {
                     matrix[i][j] = -matrix[i][j - 1];
                 } else {
                     if (i > 0) {
-                        matrix[i][j] = limitations[i - 1][base.length];
+                        matrix[i][j] = limitations[i - 1].value;
                     }
                 }
             }

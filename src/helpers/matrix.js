@@ -1,12 +1,14 @@
-export function makeLegend(rows, columns) {
+export function makeLegend(rows, columns, limitations) {
     let legend = {
         rows: [],
         columns: [],
+        signs: limitations,
     };
 
     for (let i = 0; i < rows; i++) {
         if (i === 0) {
             legend.rows[i] = "z";
+            legend.signs.unshift(null);
         } else {
             legend.rows[i] = "U" + i;
         }
@@ -16,7 +18,7 @@ export function makeLegend(rows, columns) {
         if (i === 0) {
             legend.columns[i] = "f(x)";
         } else {
-            legend.columns[i] = i;
+            legend.columns[i] = "x" + i;
         }
     }
 

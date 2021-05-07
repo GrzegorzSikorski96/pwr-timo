@@ -1,5 +1,5 @@
 <template>
-  <v-row align="center" class="align-center">
+  <v-row align="center ml-1" class="align-center">
     <slot name="before-function"></slot>
     <span v-for="i in variables" v-bind:key="i"
           class="d-inline-flex float-left align-center pa-0 col-12 col-sm-12 col-md-2 col-lg-2">
@@ -9,7 +9,7 @@
               +
             </span>
     </span>
-    <template v-if="limitation">
+    <template v-if="limitation" >
       leq
       <VariableInput v-model="values[variables]" class="align-center col-1"></VariableInput>
     </template>
