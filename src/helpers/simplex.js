@@ -40,35 +40,45 @@ export function changeLegendRowWithColumn(legend, row, column) {
 }
 
 export function createSimplexMatrix(base, limitations, n, m) {
-    let matrix = new Array(m + 1).fill(0).map(() => new Array((n * 2) + 1).fill(0))
+    let columns = n + [...base].splice(0, n).filter(x => x < 0).length + 1;
+    let matrix = new Array(m + 1).fill(0).map(() => new Array(columns).fill(0))
 
     for (let i = 0; i < matrix.length; i++) {
         let step = 1;
         for (let j = 0; j < matrix[i].length; j++) {
-            if (i === 0 && j === 0) {
-                matrix[i][j] = 0;
-            }
-            if (j % 2 !== 0) {
-                if (i === 0) {
-                    matrix[i][j] = -base[j - step];
-                    step++;
+            if (i === 0) {
+                if (j === 0) {
+                    matrix[i][j] = 0;
                 } else {
-                    matrix[i][j] = limitations[i - 1].variables[j - step];
-                    step++;
+                    if (base[j - step] < 0) {
+                        matrix[i][j] = -base[j - step];
+                        matrix[i][j + 1] = base[j - step];
+                        j++;
+                        step++;
+
+                    } else {
+                        matrix[i][j] = -base[j - step]
+                    }
                 }
             } else {
-                if (j > 0) {
-                    matrix[i][j] = -matrix[i][j - 1];
+                if (j === 0) {
+                    matrix[i][0] = limitations[i - 1].value;
                 } else {
-                    if (i > 0) {
-                        matrix[i][j] = limitations[i - 1].value;
+                    if (base[j - step] < 0) {
+                        matrix[i][j] = limitations[i - 1].variables[j - step];
+                        matrix[i][j + 1] = -limitations[i - 1].variables[j - step];
+                        j++;
+                        step++;
+
+                    } else {
+                        matrix[i][j] = limitations[i - 1].variables[j - step]
                     }
                 }
             }
         }
     }
 
-    return matrix;
+    return matrix
 }
 
 export function hasMajorityRestrictions(signs) {
@@ -123,7 +133,6 @@ export function lowestLimitationRowIndex(matrix) {
 
 
 export function SimplexEnd(matrix) {
-
     if (limitedManySolution(matrix)) {
         return limitedManySolution(matrix);
     }
@@ -200,6 +209,18 @@ export function unlimitedManySolutions(matrix) {
             }
             if (count === (matrix.length - 1)) {
                 return "Zbiór nieograniczony - wiele rozwiązań";
+            }
+        }
+    }
+
+    return false;
+}
+
+export function emptySet(matrix) {
+    for (let i = 1; i < matrix.length; i++) {
+        if (matrix[i][0] < 0) {
+            if (matrix[i].filter(x => x > 0).length === matrix[i].length - 1) {
+                return "Brak rozwiązań - zbiór pusty";
             }
         }
     }
