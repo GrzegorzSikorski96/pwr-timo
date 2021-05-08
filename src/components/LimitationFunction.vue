@@ -55,7 +55,7 @@ export default {
     },
   }),
   watch: {
-    values: function () {
+    'limitation.variables': function () {
       this.$emit("input", this.limitation);
     },
     value: function () {
