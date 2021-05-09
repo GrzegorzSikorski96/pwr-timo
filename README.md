@@ -21,7 +21,7 @@ x ∈ R<sup>n</sup>
 
 ### Aplikacja
 
-Aplikacja rozwiązuje zadanie liniowego programowania w oparciu o dwufazowy algorytm simpleks. Po kliknięciu przycisku
+Aplikacja rozwiązuje zadanie liniowego programowania, wykorzystując dwufazowy algorytm simpleks. Po kliknięciu przycisku
 **WCZYTAJ TESTOWE**, program załaduje przykładowe dane do aplikacji. Aby wczytać inne dane, należy ponownie kliknąć
 przycisk bądź wprowadzić dane ręcznie. Jako wynik zwracane są poszczególne iteracje rozwiązywania zadania oraz
 informacja o wyniku algorytmu.
@@ -41,7 +41,13 @@ funkcje.
 
 ## Uruchomienie
 
+### Lokalnie
+
 W katalogu dist otworzyć w przeglądarce plik index.html
+
+###
+
+Aplikacja dostępna jest pod adresem [timo.sikorski.dev](https://timo.sikorski.dev/)
 
 ## Dalszy rozwój aplikacji
 
