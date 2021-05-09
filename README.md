@@ -41,13 +41,11 @@ funkcje.
 
 ## Uruchomienie
 
+Aplikacja dostępna jest pod adresem [timo.sikorski.dev](https://timo.sikorski.dev/)
+
 ### Lokalnie
 
-W katalogu dist otworzyć w przeglądarce plik index.html
-
-###
-
-Aplikacja dostępna jest pod adresem [timo.sikorski.dev](https://timo.sikorski.dev/)
+Aplikację można także uruchomić lokalnie, otwierając w przeglądarce plik **index.html** znajdujący się w katalogu **dist**.
 
 ## Dalszy rozwój aplikacji
 
