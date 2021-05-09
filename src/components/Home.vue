@@ -68,19 +68,11 @@ export default {
       }
     }],
     matrix: [],
+    baseIndexes: [],
     render: false,
+    counter: 0,
   }),
   methods: {
-    createSimplexMatrix: function () {
-      this.render = false;
-
-      let matrix = Simplex.createSimplexMatrix(this.base, this.limitations, this.parameters.variables, this.parameters.limitations);
-      let legend = Matrix.makeLegend(matrix.length, matrix[0].length, Array.from(this.limitations, x => x.sign));
-
-      this.iterations[0] = {matrix: matrix, legend: legend};
-
-      this.render = true;
-    },
     calculate: function () {
       let column = Simplex.selectColumnInRow(this.iterations[this.iterations.length - 1].matrix);
       let row = Simplex.selectRow(this.iterations[this.iterations.length - 1].matrix, column);
@@ -93,8 +85,11 @@ export default {
     run: function () {
       this.clear();
 
-      let matrix = Simplex.createSimplexMatrix(this.base, this.limitations, this.parameters.variables, this.parameters.limitations);
+      let tmp = Simplex.createSimplexMatrix(this.base, this.limitations, this.parameters.variables, this.parameters.limitations);
+      this.baseIndexes = [...tmp.baseIndexes]
+      let matrix = [...tmp.matrix];
       let legend = Matrix.makeLegend(matrix.length, matrix[0].length, Array.from(this.limitations.slice(0, this.parameters.limitations), x => x.sign));
+
       this.render = true;
       this.iterations[0] = {matrix: matrix, legend: legend};
 
@@ -112,12 +107,11 @@ export default {
         });
       }
 
-      if(Simplex.emptySet(this.iterations[this.iterations.length - 1].matrix)){
-        console.log(Simplex.emptySet(this.iterations[this.iterations.length - 1].matrix))
+      if (Simplex.emptySet(this.iterations[this.iterations.length - 1].matrix)) {
         return Simplex.emptySet(this.iterations[this.iterations.length - 1].matrix);
       }
 
-      while (!Simplex.SimplexEnd(this.iterations[this.iterations.length - 1].matrix)) {
+      while (!Simplex.SimplexEnd(this.iterations[this.iterations.length - 1])) {
         let column = Simplex.selectColumnInRow(this.iterations[this.iterations.length - 1].matrix);
         let row = Simplex.selectRow(this.iterations[this.iterations.length - 1].matrix, column);
 
@@ -127,16 +121,23 @@ export default {
         });
       }
 
-      console.log(Simplex.SimplexEnd(this.iterations[this.iterations.length - 1].matrix))
+      console.log(Simplex.SimplexEnd(this.iterations[this.iterations.length - 1]))
     },
-    getLastIteration() {
-      return this.iterations[this.iterations.length];
+    getLastIterationMatrix: function (){
+      return this.iterations[this.iterations.length - 1].matrix;
     },
     async setParameters(variables, limitations) {
       this.parameters = {"variables": variables, "limitations": limitations};
     },
     async loadExample() {
-      let example = Examples.getRandomExample();
+      //let example = Examples.getRandomExample();
+      let example = Examples.examples[this.counter];
+
+      if(this.counter === Examples.examples.length - 1){
+        this.counter = 0;
+      } else{
+        this.counter++;
+      }
 
       await this.setParameters(example.parameters.variables, example.parameters.limitations).then(() => {
         this.base = example.base;
