@@ -11,13 +11,26 @@
         <v-btn class="v-btn--block mb-2" @click="loadExample">Wczytaj testowe</v-btn>
         <v-btn class="v-btn--block mb-2" @click="clear">Czyść</v-btn>
         <v-btn class="v-btn--block mb-2" @click="calculate">Oblicz</v-btn>
+
+        <Summary :base="base" :limitations="limitations">
+
+        </Summary>
+
         <br>
         <template v-if="iterations.length-1">
           <div v-for="(iteration, key) in iterations" :key="key" class="mb-4">
             <div class="iteration-header d-flex">
-              Iteracja {{ key + 1 }}
-              <v-spacer/>
-              Optymalna wartość: {{ iteration.matrix[0][0] }}
+              <template v-if="key !== 0">
+                Faza {{ iteration.legend.phase }} Iteracja {{ iteration.legend.iteration }}
+                <v-spacer/>
+                Optymalna wartość: {{ iteration.matrix[0][0] }}
+              </template>
+
+              <template v-else>
+                Tablica bazowa simpleks
+              </template>
+
+
             </div>
 
             <SimplexTable :legend="iteration.legend" :table="iteration.matrix"/>
@@ -38,10 +51,12 @@ import * as Simplex from "@/helpers/simplex";
 import * as Matrix from "@/helpers/matrix"
 import * as Examples from "@/helpers/examples"
 import * as Cases from "@/helpers/cases"
+import Summary from "@/components/Summary";
 
 export default {
   name: 'Home',
   components: {
+    Summary,
     SimplexTable,
     BaseFunction,
     Limitations,
@@ -64,7 +79,11 @@ export default {
         rows: [],
         columns: [],
         signs: [],
-      }
+        selected: {
+          rows: [],
+          columns: []
+        }
+      },
     }],
     counter: 0,
   }),
@@ -88,7 +107,7 @@ export default {
 
         this.iterations.push({
           matrix: Gaussian.calculate(this.getLastMatrix(), row, column),
-          legend: Matrix.changeLegendRowWithColumn(this.getLastLegend(), row, column)
+          legend: Matrix.changeLegendRowWithColumn(this.getLastLegend(), row, column, 1),
         });
       }
 
@@ -102,7 +121,7 @@ export default {
 
         this.iterations.push({
           matrix: Gaussian.calculate(this.getLastMatrix(), row, column),
-          legend: Matrix.changeLegendRowWithColumn(this.getLastLegend(), row, column)
+          legend: Matrix.changeLegendRowWithColumn(this.getLastLegend(), row, column, 2),
         });
       }
 
@@ -123,11 +142,7 @@ export default {
     async loadExample() {
       let example = Examples.examples[this.counter];
 
-      if (this.counter === Examples.examples.length - 1) {
-        this.counter = 0;
-      } else {
-        this.counter++;
-      }
+      this.counter === (Examples.examples.length - 1) ? this.counter = 0 : this.counter++;
 
       await this.setParameters(example.parameters.variables, example.parameters.limitations).then(() => {
         this.base = example.base;
@@ -140,6 +155,10 @@ export default {
         legend: {
           rows: [],
           columns: [],
+          selected: {
+            rows: [],
+            columns: []
+          }
         }
       }]
     }

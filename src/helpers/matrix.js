@@ -35,6 +35,10 @@ export function makeLegend(rows, columns, limitations) {
         rows: [],
         columns: [],
         signs: limitations,
+        selected: {
+            rows: [],
+            columns: [],
+        }
     };
 
     for (let i = 0; i < rows; i++) {
@@ -57,8 +61,14 @@ export function makeLegend(rows, columns, limitations) {
     return legend;
 }
 
-export function changeLegendRowWithColumn(legend, row, column) {
+export function changeLegendRowWithColumn(legend, row, column, phase) {
     let local = JSON.parse(JSON.stringify(legend));
+    local.phase = phase;
+
+    legend.phase !== phase ? local.iteration = 1 : local.iteration++;
+
+    local.selected.rows = [row];
+    local.selected.columns = [column];
 
     local.rows[row] = legend.columns[column];
     local.columns[column] = legend.rows[row];

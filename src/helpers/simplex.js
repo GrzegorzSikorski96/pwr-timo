@@ -52,10 +52,13 @@ export function hasLowerThanZeroLimitation(matrix) {
 
 export function changeMajoritySign(iteration) {
     let local = JSON.parse(JSON.stringify(iteration));
-
+    local.legend.selected.rows = []
+    local.legend.phase = 1;
+    local.legend.iteration = 1;
     for (let i = 1; i < local.legend.signs.length; i++) {
         if (local.legend.signs[i] === "geq") {
             local.legend.signs[i] = "leq";
+            local.legend.selected.rows.push(i);
             for (let col = 0; col < local.matrix[i].length; col++) {
                 local.matrix[i][col] = -local.matrix[i][col];
             }
