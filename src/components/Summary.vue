@@ -13,6 +13,8 @@
       </v-card-text>
     </v-card-text>
 
+    <v-divider/>
+
     <v-card-title>
       Ograniczenia
     </v-card-title>
@@ -29,6 +31,25 @@
         </div>
       </v-card-text>
     </v-card-text>
+    <v-divider/>
+
+    <template v-if="result.text.length">
+      <v-card-title>
+        Rozwiązanie
+      </v-card-title>
+      <v-card-text>
+        <v-card-text class="text-subtitle-1">
+          {{ result.text }}
+          <template v-if="result.value">
+            <div>x<sub>0</sub>={{ result.value }}</div>
+
+            <div v-for="(value, key) in result.variables" :key="key">
+              x<sub>{{ key + 1 }}</sub>={{ value }}
+            </div>
+          </template>
+        </v-card-text>
+      </v-card-text>
+    </template>
   </v-card>
 </template>
 
@@ -38,6 +59,7 @@ export default {
   props: {
     base: Array,
     limitations: Array,
+    result: Object,
   },
   methods: {
     sign(sign) {

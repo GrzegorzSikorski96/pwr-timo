@@ -8,13 +8,12 @@
       </v-col>
 
       <v-col class="col-12 col-sm-12 col-md-12 col-lg-6">
-        <v-btn class="v-btn--block mb-2" @click="loadExample">Wczytaj testowe</v-btn>
-        <v-btn class="v-btn--block mb-2" @click="clear">Czyść</v-btn>
-        <v-btn class="v-btn--block mb-2" @click="calculate">Oblicz</v-btn>
+        <v-btn class="v-btn--block mb-2 info" @click="showAuthor = true">Informacje</v-btn>
+        <v-btn class="v-btn--block mb-2 secondary" @click="loadExample">Wczytaj testowe</v-btn>
+        <v-btn class="v-btn--block mb-2 danger" @click="clear">Czyść</v-btn>
+        <v-btn class="v-btn--block mb-2 success" @click="calculate">Oblicz</v-btn>
 
-        <Summary :base="base" :limitations="limitations">
-
-        </Summary>
+        <Summary :base="base" :limitations="limitations" :result="result"/>
 
         <br>
         <template v-if="iterations.length-1">
@@ -29,8 +28,6 @@
               <template v-else>
                 Tablica bazowa simpleks
               </template>
-
-
             </div>
 
             <SimplexTable :legend="iteration.legend" :table="iteration.matrix"/>
@@ -38,6 +35,7 @@
         </template>
       </v-col>
     </v-row>
+    <Author :modal="showAuthor" @modal="authorDialog"/>
   </v-container>
 </template>
 
@@ -52,10 +50,12 @@ import * as Matrix from "@/helpers/matrix"
 import * as Examples from "@/helpers/examples"
 import * as Cases from "@/helpers/cases"
 import Summary from "@/components/Summary";
+import Author from "@/components/Author";
 
 export default {
   name: 'Home',
   components: {
+    Author,
     Summary,
     SimplexTable,
     BaseFunction,
@@ -63,6 +63,7 @@ export default {
     Parameters,
   },
   data: () => ({
+    showAuthor: false,
     parameters: {
       variables: 1,
       limitations: 2,
@@ -85,6 +86,11 @@ export default {
         }
       },
     }],
+    result: {
+      text: "",
+      value: {},
+      variables: [],
+    },
     counter: 0,
   }),
   methods: {
@@ -112,7 +118,7 @@ export default {
       }
 
       if (Cases.emptySet(this.getLastMatrix())) {
-        return Cases.emptySet(this.getLastMatrix());
+        this.result = Cases.emptySet(this.getLastMatrix());
       }
 
       while (!Cases.SimplexEnd(this.getLastIteration())) {
@@ -125,7 +131,7 @@ export default {
         });
       }
 
-      console.log(Cases.SimplexEnd(this.getLastIteration()))
+      this.result = Cases.SimplexEnd(this.getLastIteration())
     },
     getLastMatrix() {
       return this.getLastIteration().matrix;
@@ -140,6 +146,7 @@ export default {
       this.parameters = {"variables": variables, "limitations": limitations};
     },
     async loadExample() {
+      this.clear();
       let example = Examples.examples[this.counter];
 
       this.counter === (Examples.examples.length - 1) ? this.counter = 0 : this.counter++;
@@ -155,13 +162,24 @@ export default {
         legend: {
           rows: [],
           columns: [],
+          phase: {},
+          iteration: {},
           selected: {
             rows: [],
             columns: []
           }
         }
       }]
-    }
+
+      this.result= {
+        text: "",
+            value: {},
+        variables: [],
+      };
+    },
+    authorDialog(value) {
+      this.showAuthor = value
+    },
   },
 }
 </script>
