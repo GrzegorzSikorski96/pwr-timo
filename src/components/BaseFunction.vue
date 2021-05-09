@@ -5,21 +5,29 @@
     </v-card-title>
 
     <v-card-text>
-      <Function :variables="variables" v-model="baseFunction">
-        <template v-slot:before-function>
-          max x<sub>0</sub><span class="mr-2">=</span>
-        </template>
-      </Function>
+      <v-row align="center" class="align-center">
+        max x<sub>0</sub><span class="mr-2">=</span>
+        <span v-for="i in variables" v-bind:key="i"
+              class="d-flex float-left align-center pa-0 col-12 col-sm-12 col-md-2 col-lg-2 mt-2">
+          <v-text-field v-model="baseFunction[i-1]" :value="0" class="mx-0 px-0" required type="number">
+            <template slot="label">x<sub>{{ i }}</sub></template>
+          </v-text-field>
+          x<sub>{{ i }}</sub>
+
+          <span v-if="i !== variables" class="mx-2">
+            +
+          </span>
+        </span>
+      </v-row>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
-import Function from "@/components/Function";
 
 export default {
   name: "BaseFunction",
-  components: {Function},
+  components: {},
   props: {
     variables: Number,
     value: Array,

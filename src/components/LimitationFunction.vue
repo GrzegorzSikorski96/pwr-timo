@@ -6,6 +6,7 @@
       <v-text-field v-model="limitation.variables[i-1]"
                     class="mx-0 px-0"
                     required
+                    type="number"
       >
         <template slot="label">x<sub>{{ i }}</sub></template>
       </v-text-field>
@@ -20,18 +21,19 @@
     <v-btn-toggle
         v-model="limitation.sign" class="col-12 col-sm-12 col-md-12 col-lg-12 px-0"
     >
-      <v-btn color="primary" class="mb-1" value="leq" outlined small>
+      <v-btn class="mb-1" color="primary" outlined small value="leq">
         <v-icon color="primary">≤</v-icon>
       </v-btn>
-      <v-btn color="primary" class="mt-1" value="geq" outlined small>
+      <v-btn class="mt-1" color="primary" outlined small value="geq">
         <v-icon color="primary">≥</v-icon>
       </v-btn>
     </v-btn-toggle>
 
     <v-text-field v-model="limitation.value"
                   class="mr-1 px-0 col-12 col-12 col-sm-12 col-md-12 col-lg-12 pb-0"
-                  required
                   label="Wartość ograniczenia"
+                  required
+                  type="number"
     >
     </v-text-field>
   </v-row>
@@ -42,7 +44,6 @@
 
 export default {
   name: "LimitationFunction",
-  components: {},
   props: {
     variables: Number,
     value: Object,

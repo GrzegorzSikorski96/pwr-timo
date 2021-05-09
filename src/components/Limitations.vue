@@ -4,12 +4,10 @@
       Ograniczenia
     </v-card-title>
     <v-card-text>
-      <v-row align="center" class="ma-1" v-for="i in m" v-bind:key="i">
+      <v-row v-for="i in m" v-bind:key="i" align="center" class="ma-1">
         Ograniczenie {{ i }}
         <v-sheet class="align-center col-12" outlined>
-          <LimitationFunction class="mx-1 align-center" :variables="n" v-model="limitations[i-1]" :limitation="true">
-          </LimitationFunction>
-
+          <LimitationFunction v-model="limitations[i-1]" :limitation="true" :variables="n" class="mx-1 align-center"/>
         </v-sheet>
       </v-row>
     </v-card-text>

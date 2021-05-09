@@ -3,7 +3,7 @@ export function selectColumnInRow(matrix, row = 0) {
     let column;
 
     for (let i = 1; i < matrix[row].length; i++) {
-        if (matrix[row][i] < min && matrix[row][i] < 0) {
+        if (matrix[row][i] < min) {
             min = matrix[row][i];
             column = i;
         }
@@ -13,7 +13,7 @@ export function selectColumnInRow(matrix, row = 0) {
 }
 
 export function selectRow(matrix, column) {
-    let min = 1000000;
+    let min = Infinity;
     let row = 1;
 
     for (let i = 1; i < matrix.length; i++) {
@@ -26,96 +26,9 @@ export function selectRow(matrix, column) {
     return row;
 }
 
-export function calculateRowIndicator(value, colValue) {
+function calculateRowIndicator(value, colValue) {
     return value / colValue;
 }
-
-export function changeLegendRowWithColumn(legend, row, column) {
-    let local = JSON.parse(JSON.stringify(legend));
-
-    local.rows[row] = legend.columns[column];
-    local.columns[column] = legend.rows[row];
-
-    return local;
-}
-
-export function createSimplexMatrix(base, limitations, n, m) {
-    let matrix = new Array(m + 1).fill(0).map(() => new Array((n * 2) + 1).fill(0))
-    let baseIndexes = [];
-    for (let i = 0; i < matrix.length; i++) {
-        let step = 1;
-        for (let j = 0; j < matrix[i].length; j++) {
-            if (i === 0 && j === 0) {
-                matrix[i][j] = 0;
-            }
-            if (j % 2 !== 0) {
-                if (i === 0) {
-                    matrix[i][j] = -base[j - step];
-                    baseIndexes.push(j);
-                    step++;
-                } else {
-                    matrix[i][j] = limitations[i - 1].variables[j - step];
-                    baseIndexes.push(j);
-                    step++;
-                }
-            } else {
-                if (j > 0) {
-                    matrix[i][j] = -matrix[i][j - 1];
-                } else {
-                    if (i > 0) {
-                        matrix[i][j] = limitations[i - 1].value;
-                    }
-                }
-            }
-        }
-    }
-
-    return {matrix: matrix, baseIndexes: baseIndexes};
-}
-
-// export function createSimplexMatrix(base, limitations, n, m) {
-//     let columns = n + [...base].splice(0, n).filter(x => x < 0).length + 1;
-//     let matrix = new Array(m + 1).fill(0).map(() => new Array(columns).fill(0))
-//     let baseIndexes = [];
-//
-//     for (let i = 0; i < matrix.length; i++) {
-//         let step = 1;
-//         for (let j = 0; j < matrix[i].length; j++) {
-//             if (i === 0) {
-//                 if (j === 0) {
-//                     matrix[i][j] = 0;
-//                 } else {
-//                     if (base[j - step] < 0) {
-//                         matrix[i][j] = -base[j - step];
-//                         matrix[i][j + 1] = base[j - step];
-//                         baseIndexes.push(j);
-//                         j++;
-//                         step++;
-//                     } else {
-//                         matrix[i][j] = -base[j - step]
-//                         baseIndexes.push(j);
-//                     }
-//                 }
-//             } else {
-//                 if (j === 0) {
-//                     matrix[i][0] = limitations[i - 1].value;
-//                 } else {
-//                     if (base[j - step] < 0) {
-//                         matrix[i][j] = limitations[i - 1].variables[j - step];
-//                         matrix[i][j + 1] = -limitations[i - 1].variables[j - step];
-//                         j++;
-//                         step++;
-//
-//                     } else {
-//                         matrix[i][j] = limitations[i - 1].variables[j - step]
-//                     }
-//                 }
-//             }
-//         }
-//     }
-//
-//     return {matrix: matrix, baseIndexes: baseIndexes}
-// }
 
 export function hasMajorityRestrictions(signs) {
     for (let sign of signs) {
@@ -165,110 +78,4 @@ export function lowestLimitationRowIndex(matrix) {
     }
 
     return index;
-}
-
-let localLegend = {};
-
-export function SimplexEnd(iteration) {
-    localLegend = iteration.legend;
-
-    isBaseVariable(1);
-
-    if (oneSolution(iteration.matrix)) {
-        return oneSolution(iteration.matrix);
-    }
-
-    if (limitedManySolution(iteration.matrix)) {
-        return limitedManySolution(iteration.matrix);
-    }
-
-    if (unlimitedNoSolutions(iteration.matrix)) {
-        return unlimitedNoSolutions(iteration.matrix);
-    }
-
-    if (unlimitedManySolutions(iteration.matrix)) {
-        return unlimitedManySolutions(iteration.matrix);
-    }
-
-    return false;
-}
-
-export function limitedManySolution(matrix) {
-    for (let col = 1; col < matrix[0].length; col++) {
-        if (isBaseVariable(col) && matrix[0][col] === 0) {
-            let count = 0;
-            for (let row = 1; row < matrix.length; row++) {
-                if (matrix[row][col] > 0) {
-                    count++;
-                }
-            }
-            if (count === (matrix.length - 1)) {
-                return "Zbiór ograniczony - wiele rozwiązań";
-            }
-        }
-    }
-
-    return false;
-}
-
-export function oneSolution(matrix) {
-    if (!limitedManySolution(matrix)) {
-        if (matrix[0].filter(x => x >= 0).length === matrix[0].length) {
-            return "Istnieje jedno rozwiązanie optymalne: z=" + matrix[0][0];
-        }
-    }
-
-    return false;
-}
-
-export function unlimitedNoSolutions(matrix) {
-    for (let col = 1; col < matrix[0].length; col++) {
-        if (isBaseVariable(col) && matrix[0][col] < 0) {
-            let count = 0;
-            for (let row = 1; row < matrix.length; row++) {
-                if (matrix[row][col] <= 0) {
-                    count++;
-                }
-            }
-            if (count === (matrix.length - 1)) {
-                return "Zbiór nieograniczony - brak rozwiązań";
-            }
-        }
-    }
-
-    return false;
-}
-
-export function unlimitedManySolutions(matrix) {
-    for (let col = 1; col < matrix[0].length; col++) {
-        if (isBaseVariable(col) && matrix[0][col] === 0) {
-            let count = 0;
-            for (let row = 1; row < matrix.length; row++) {
-                if (matrix[row][col] <= 0) {
-                    count++;
-                }
-            }
-            if (count === (matrix.length - 1)) {
-                return "Zbiór nieograniczony - wiele rozwiązań";
-            }
-        }
-    }
-
-    return false;
-}
-
-export function emptySet(matrix) {
-    for (let i = 1; i < matrix.length; i++) {
-        if (matrix[i][0] < 0) {
-            if (matrix[i].filter(x => x > 0).length === matrix[i].length - 1) {
-                return "Brak rozwiązań - zbiór pusty";
-            }
-        }
-    }
-
-    return false;
-}
-
-function isBaseVariable(index) {
-    return Number(localLegend.columns[index].substring(1)) % 2;
 }

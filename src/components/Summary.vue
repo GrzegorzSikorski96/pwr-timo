@@ -19,7 +19,7 @@
           Ograniczenia
         </v-card-title>
         <v-card-text>
-          <span class="d-block" v-for="(row, key) in limitations" v-bind:key="key">
+          <span v-for="(row, key) in limitations" v-bind:key="key" class="d-block">
             <span v-for="(col, colKey) in row" v-bind:key="colKey">
               <span>
                 <template v-if="colKey === row.length-1">

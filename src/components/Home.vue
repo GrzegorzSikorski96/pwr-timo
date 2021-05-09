@@ -2,19 +2,17 @@
   <v-container>
     <v-row class="mt-2">
       <v-col class="col-12 col-sm-12 col-md-12 col-lg-6">
-        <Parameters v-model="parameters"></Parameters>
-        <BaseFunction v-model="base" :variables="parameters.variables" class="my-5"></BaseFunction>
-        <Limitations v-model="limitations" :m="parameters.limitations" :n="parameters.variables"></Limitations>
+        <Parameters v-model="parameters"/>
+        <BaseFunction v-model="base" :variables="parameters.variables" class="my-5"/>
+        <Limitations v-model="limitations" :m="parameters.limitations" :n="parameters.variables"/>
       </v-col>
 
       <v-col class="col-12 col-sm-12 col-md-12 col-lg-6">
         <v-btn class="v-btn--block mb-2" @click="loadExample">Wczytaj testowe</v-btn>
         <v-btn class="v-btn--block mb-2" @click="clear">Czyść</v-btn>
-        <v-btn class="v-btn--block mb-2" @click="createSimplexMatrix">Generuj tabele</v-btn>
-        <v-btn class="v-btn--block mb-2" @click="run">Start</v-btn>
-        <v-btn class="v-btn--block mb-2" @click="calculate()">Oblicz</v-btn>
+        <v-btn class="v-btn--block mb-2" @click="calculate">Oblicz</v-btn>
         <br>
-        <template v-if="this.render">
+        <template v-if="iterations.length-1">
           <div v-for="(iteration, key) in iterations" :key="key" class="mb-4">
             <div class="iteration-header d-flex">
               Iteracja {{ key + 1 }}
@@ -39,6 +37,7 @@ import * as Gaussian from "@/helpers/gaussian";
 import * as Simplex from "@/helpers/simplex";
 import * as Matrix from "@/helpers/matrix"
 import * as Examples from "@/helpers/examples"
+import * as Cases from "@/helpers/cases"
 
 export default {
   name: 'Home',
@@ -57,7 +56,7 @@ export default {
     limitations: [{
       sign: "leq",
       variables: [],
-      value: {},
+      value: Number,
     }],
     iterations: [{
       matrix: [],
@@ -67,75 +66,66 @@ export default {
         signs: [],
       }
     }],
-    matrix: [],
-    baseIndexes: [],
-    render: false,
     counter: 0,
   }),
   methods: {
     calculate: function () {
-      let column = Simplex.selectColumnInRow(this.iterations[this.iterations.length - 1].matrix);
-      let row = Simplex.selectRow(this.iterations[this.iterations.length - 1].matrix, column);
-
-      this.iterations.push({
-        matrix: Gaussian.calculate(this.iterations[this.iterations.length - 1].matrix, row, column),
-        legend: Simplex.changeLegendRowWithColumn(this.iterations[this.iterations.length - 1].legend, row, column)
-      });
-    },
-    run: function () {
       this.clear();
+      let matrix = Matrix.createSimplexMatrix(this.base, this.limitations, this.parameters.variables, this.parameters.limitations);
 
-      let tmp = Simplex.createSimplexMatrix(this.base, this.limitations, this.parameters.variables, this.parameters.limitations);
-      this.baseIndexes = [...tmp.baseIndexes]
-      let matrix = [...tmp.matrix];
-      let legend = Matrix.makeLegend(matrix.length, matrix[0].length, Array.from(this.limitations.slice(0, this.parameters.limitations), x => x.sign));
+      this.iterations[0] = {
+        matrix: matrix,
+        legend: Matrix.makeLegend(matrix.length, matrix[0].length, Array.from(this.limitations.slice(0, this.parameters.limitations), x => x.sign))
+      };
 
-      this.render = true;
-      this.iterations[0] = {matrix: matrix, legend: legend};
-
-      if (Simplex.hasMajorityRestrictions(this.iterations[this.iterations.length - 1].legend.signs)) {
-        this.iterations.push(Object.assign({}, Simplex.changeMajoritySign(this.iterations[this.iterations.length - 1])));
+      if (Simplex.hasMajorityRestrictions(this.getLastLegend().signs)) {
+        this.iterations.push(Object.assign({}, Simplex.changeMajoritySign(this.getLastIteration())));
       }
 
-      while (Simplex.hasLowerThanZeroLimitation(this.iterations[this.iterations.length - 1].matrix) && !Simplex.emptySet(this.iterations[this.iterations.length - 1].matrix)) {
-        let row = Simplex.lowestLimitationRowIndex(this.iterations[this.iterations.length - 1].matrix);
-        let column = Simplex.selectColumnInRow(this.iterations[this.iterations.length - 1].matrix, row);
+      while (Simplex.hasLowerThanZeroLimitation(this.getLastMatrix()) && !Cases.emptySet(this.getLastMatrix())) {
+        let row = Simplex.lowestLimitationRowIndex(this.getLastMatrix());
+        let column = Simplex.selectColumnInRow(this.getLastMatrix(), row);
 
         this.iterations.push({
-          matrix: Gaussian.calculate(this.iterations[this.iterations.length - 1].matrix, row, column),
-          legend: Simplex.changeLegendRowWithColumn(this.iterations[this.iterations.length - 1].legend, row, column)
+          matrix: Gaussian.calculate(this.getLastMatrix(), row, column),
+          legend: Matrix.changeLegendRowWithColumn(this.getLastLegend(), row, column)
         });
       }
 
-      if (Simplex.emptySet(this.iterations[this.iterations.length - 1].matrix)) {
-        return Simplex.emptySet(this.iterations[this.iterations.length - 1].matrix);
+      if (Cases.emptySet(this.getLastMatrix())) {
+        return Cases.emptySet(this.getLastMatrix());
       }
 
-      while (!Simplex.SimplexEnd(this.iterations[this.iterations.length - 1])) {
-        let column = Simplex.selectColumnInRow(this.iterations[this.iterations.length - 1].matrix);
-        let row = Simplex.selectRow(this.iterations[this.iterations.length - 1].matrix, column);
+      while (!Cases.SimplexEnd(this.getLastIteration())) {
+        let column = Simplex.selectColumnInRow(this.getLastMatrix());
+        let row = Simplex.selectRow(this.getLastMatrix(), column);
 
         this.iterations.push({
-          matrix: Gaussian.calculate(this.iterations[this.iterations.length - 1].matrix, row, column),
-          legend: Simplex.changeLegendRowWithColumn(this.iterations[this.iterations.length - 1].legend, row, column)
+          matrix: Gaussian.calculate(this.getLastMatrix(), row, column),
+          legend: Matrix.changeLegendRowWithColumn(this.getLastLegend(), row, column)
         });
       }
 
-      console.log(Simplex.SimplexEnd(this.iterations[this.iterations.length - 1]))
+      console.log(Cases.SimplexEnd(this.getLastIteration()))
     },
-    getLastIterationMatrix: function (){
-      return this.iterations[this.iterations.length - 1].matrix;
+    getLastMatrix() {
+      return this.getLastIteration().matrix;
+    },
+    getLastLegend() {
+      return this.getLastIteration().legend;
+    },
+    getLastIteration() {
+      return this.iterations[this.iterations.length - 1];
     },
     async setParameters(variables, limitations) {
       this.parameters = {"variables": variables, "limitations": limitations};
     },
     async loadExample() {
-      //let example = Examples.getRandomExample();
       let example = Examples.examples[this.counter];
 
-      if(this.counter === Examples.examples.length - 1){
+      if (this.counter === Examples.examples.length - 1) {
         this.counter = 0;
-      } else{
+      } else {
         this.counter++;
       }
 
@@ -152,7 +142,6 @@ export default {
           columns: [],
         }
       }]
-      this.render = false;
     }
   },
 }
