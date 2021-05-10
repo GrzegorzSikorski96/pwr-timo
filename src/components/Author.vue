@@ -30,6 +30,7 @@
       </v-card-text>
 
       <v-card-actions>
+        <v-btn text href="https://github.com/GrzegorzSikorski96/pwr-timo" target="__blank" outlined><v-icon>mdi-github</v-icon> Kod źródłowy</v-btn>
         <v-spacer/>
         <v-btn color="darken-1" text @click="closeDialog()">Anuluj</v-btn>
       </v-card-actions>
