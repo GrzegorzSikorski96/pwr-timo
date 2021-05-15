@@ -11,12 +11,12 @@ export function SimplexEnd(iteration) {
         return limitedManySolution(iteration.matrix);
     }
 
-    if (unlimitedNoSolutions(iteration.matrix)) {
-        return unlimitedNoSolutions(iteration.matrix);
-    }
-
     if (unlimitedManySolutions(iteration.matrix)) {
         return unlimitedManySolutions(iteration.matrix);
+    }
+
+    if (unlimitedNoSolutions(iteration.matrix)) {
+        return unlimitedNoSolutions(iteration.matrix);
     }
 
     return false;
@@ -24,7 +24,7 @@ export function SimplexEnd(iteration) {
 
 export function limitedManySolution(matrix) {
     for (let col = 1; col < matrix[0].length; col++) {
-        if (isBaseVariableColumn(col) && matrix[0][col] === 0) {
+        if (hasPairInRow(localLegend.columns[col]) >= 0 && matrix[0][col] === 0) {
             if (matrix.slice(1).filter(x => x[col] > 0).length === (matrix.length - 1)) {
                 return {
                     text: "Zbiór ograniczony - wiele rozwiązań",
@@ -38,7 +38,7 @@ export function limitedManySolution(matrix) {
 
 export function oneSolution(matrix) {
     if (!limitedManySolution(matrix)) {
-        if (matrix[0].filter(x => x >= 0).length === matrix[0].length) {
+        if (matrix[0].slice(1).filter(x => x >= 0).length === matrix[0].length-1) {
             return {
                 text: "Istnieje jedno rozwiązanie optymalne",
                 value: matrix[0][0],
@@ -51,7 +51,7 @@ export function oneSolution(matrix) {
 
 export function unlimitedNoSolutions(matrix) {
     for (let col = 1; col < matrix[0].length; col++) {
-        if (isBaseVariableColumn(col) && matrix[0][col] < 0) {
+        if (hasPairInRow(localLegend.columns[col]) >= 0 && matrix[0][col] < 0) {
             if (matrix.slice(1).filter(x => x[col] <= 0).length === (matrix.length - 1)) {
                 return {
                     text: "Zbiór nieograniczony - brak rozwiązań",
@@ -65,7 +65,7 @@ export function unlimitedNoSolutions(matrix) {
 
 export function unlimitedManySolutions(matrix) {
     for (let col = 1; col < matrix[0].length; col++) {
-        if (isBaseVariableColumn(col) && matrix[0][col] === 0) {
+        if (hasPairInRow(localLegend.columns[col]) >= 0 && matrix[0][col] === 0) {
             if (matrix.slice(1).filter(x => x[col] <= 0).length === (matrix.length - 1)) {
                 return {
                     text: "Zbiór nieograniczony - wiele rozwiązań",
@@ -89,10 +89,6 @@ export function emptySet(matrix) {
     }
 
     return false;
-}
-
-function isBaseVariableColumn(index) {
-    return Number(localLegend.columns[index].substring(1)) % 2;
 }
 
 function getVariablesValues(matrix) {
@@ -125,3 +121,26 @@ function getVariablesValues(matrix) {
 
     return result;
 }
+
+export function hasPairInRow(legendItem) {
+    if (legendItem.substr(0, 1) === "U") {
+        return false;
+    }
+
+    let number = Number(legendItem.substr(1));
+
+    if (number % 2 === 0) {
+        return localLegend.columns.findIndex((x) => {
+            if (x.substr(0, 1) === "x") {
+                return Number(x.substr(1)) === number - 1;
+            }
+        })
+    } else {
+        return localLegend.columns.findIndex((x) => {
+            if (x.substr(0, 1) === "x") {
+                return Number(x.substr(1)) === number + 1;
+            }
+        })
+    }
+}
+

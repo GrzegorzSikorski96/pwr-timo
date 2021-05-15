@@ -1,5 +1,5 @@
 export var examples = [
-    {// Jedno rozwiązanie 7.875 x1=2,625 x2=2,625
+    {// Jedno rozwiązanie - x0=7.875 x1=2,625 x2=2,625
         parameters: {
             variables: 2,
             limitations: 3,
@@ -13,7 +13,7 @@ export var examples = [
             variables: [6, 2], sign: "leq", value: 21,
         },]
     },
-    {// Nieograniczony - wiele rozwiązań
+    {// Jedno rozwiązanie - x0=-6 x1=-2  x2=-2
         parameters: {
             variables: 2,
             limitations: 2,
@@ -39,7 +39,7 @@ export var examples = [
             variables: [5, 2], sign: "leq", value: 20,
         },]
     },
-    {//Nieograniczony - wiele rozwiązań
+    {//Jedno rozwiązanie - x0=-6600 x1=-2 x2=-2
         parameters: {
             variables: 2,
             limitations: 2,
@@ -51,21 +51,33 @@ export var examples = [
             variables: [1, -2], sign: "geq", value: 2,
         },]
     },
-    {// Jedno rozwiązanie z=61, x1=-7 x2=12
+    {//Jedno rozwiązanie - x0=-1 x1=-0.5 x2=0
+        parameters: {
+            variables: 2,
+            limitations: 2,
+        },
+        base: [2, 1],
+        limitations: [{
+            variables: [-4, 3], sign: "leq", value: 2,
+        }, {
+            variables: [-2, -1], sign: "geq", value: 1,
+        },]
+    },
+    {//Jedno rozwiązanie - x0=3.249 x1=-3.75 x2=-3.501
         parameters: {
             variables: 2,
             limitations: 3,
         },
-        base: [5, 8],
+        base: [1, -2],
         limitations: [{
-            variables: [3, 2], sign: "geq", value: 3,
+            variables: [-4, 2], sign: "leq", value: 8,
         }, {
-            variables: [1, 4], sign: "geq", value: 4,
+            variables: [2, -3], sign: "leq", value: 3,
         }, {
-            variables: [1, 1], sign: "leq", value: 5,
+            variables: [3, 2], sign: "leq", value: 6,
         },]
     },
-    {//Nieograniczony brak rozwiązań
+    {//Nieograniczony - brak rozwiązań
         parameters: {
             variables: 2,
             limitations: 4,
@@ -81,7 +93,7 @@ export var examples = [
             variables: [0, 1], sign: "geq", value: 0,
         },]
     },
-    {//Nieograniczony brak rozwiązań
+    {//Nieograniczony - brak rozwiązań
         parameters: {
             variables: 2,
             limitations: 3,
@@ -95,7 +107,7 @@ export var examples = [
             variables: [1, 1], sign: "leq", value: 6,
         },]
     },
-    {//Nieograniczony - wiele rozwiązań
+    {//Nieograniczony - brak rozwiązań
         parameters: {
             variables: 3,
             limitations: 3,
@@ -109,8 +121,57 @@ export var examples = [
             variables: [0, 1, -1], sign: "leq", value: 2,
         },]
     },
+    {// Jedno rozwiązanie - x0=8 x1=-4 x2=-2
+        parameters: {
+            variables: 2,
+            limitations: 2,
+        },
+        base: [-1, -2],
+        limitations: [{
+            variables: [-1, 1], sign: "leq", value: 2,
+        }, {
+            variables: [0, 1], sign: "geq", value: -2,
+        },
+        ]
+    },
+    {// Jedno rozwiązanie - x0=5.6 x1=-3.2 x2=-1.2
+        parameters: {
+            variables: 2,
+            limitations: 2,
+        },
+        base: [-1, -2],
+        limitations: [{
+            variables: [-1, 1], sign: "leq", value: 2,
+        }, {
+            variables: [1, 4], sign: "geq", value: -8,
+        },
+        ]
+    },
+    {// Jedno rozwiązanie - x0=61, x1=-7 x2=12
+        parameters: {
+            variables: 2,
+            limitations: 3,
+        },
+        base: [5, 8],
+        limitations: [{
+            variables: [3, 2], sign: "geq", value: 3,
+        }, {
+            variables: [1, 4], sign: "geq", value: 4,
+        }, {
+            variables: [1, 1], sign: "leq", value: 5,
+        },]
+    },
+    {// Nieograniczone - brak rozwiązań
+        parameters: {
+            variables: 2,
+            limitations: 2,
+        },
+        base: [-1, -4],
+        limitations: [{
+            variables: [-1, 1], sign: "leq", value: 2,
+        }, {
+            variables: [1, 2], sign: "geq", value: -8,
+        },
+        ]
+    },
 ]
-
-export function getRandomExample() {
-    return examples[Math.floor(Math.random() * examples.length)];
-}
