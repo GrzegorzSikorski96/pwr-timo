@@ -9,14 +9,14 @@
 
       <v-col class="col-12 col-sm-12 col-md-12 col-lg-6">
         <v-btn class="v-btn--block mb-2 info" @click="showAuthor = true">Informacje</v-btn>
+        <v-btn class="v-btn--block mb-2 warning" @click="clear">Czyść</v-btn>
         <v-btn class="v-btn--block mb-2 secondary" @click="loadExample">Wczytaj testowe</v-btn>
-        <v-btn class="v-btn--block mb-2 danger" @click="clear">Czyść</v-btn>
         <v-btn class="v-btn--block mb-2 success" @click="calculate">Oblicz</v-btn>
 
         <Summary :base="base" :limitations="limitations" :result="result"/>
 
         <br>
-        <template v-if="iterations.length-1">
+        <template v-if="render">
           <div v-for="(iteration, key) in iterations" :key="key" class="mb-4">
             <div class="iteration-header d-flex">
               <template v-if="key !== 0">
@@ -92,6 +92,7 @@ export default {
       variables: [],
     },
     counter: 0,
+    render: false,
   }),
   methods: {
     calculate: function () {
@@ -102,6 +103,8 @@ export default {
         matrix: matrix,
         legend: Matrix.makeLegend(matrix.length, matrix[0].length, Array.from(this.limitations.slice(0, this.parameters.limitations), x => x.sign))
       };
+
+      this.render = true;
 
       if (Simplex.hasMajorityRestrictions(this.getLastLegend().signs)) {
         this.iterations.push(Object.assign({}, Simplex.changeMajoritySign(this.getLastIteration())));
@@ -170,10 +173,10 @@ export default {
           }
         }
       }]
-
-      this.result= {
+      this.render = false;
+      this.result = {
         text: "",
-            value: {},
+        value: {},
         variables: [],
       };
     },
