@@ -22,10 +22,24 @@ export function SimplexEnd(iteration) {
     return false;
 }
 
+// export function limitedManySolution(matrix) {
+//     for (let col = 1; col < matrix[0].length; col++) {
+//         if (hasPairInRow(localLegend.columns[col]) >= 0 && matrix[0][col] === 0) {
+//             if (matrix.slice(1).filter(x => x[col] > 0).length === (matrix.length - 1)) {
+//                 return {
+//                     text: "Zbiór ograniczony - wiele rozwiązań",
+//                 };
+//             }
+//         }
+//     }
+//
+//     return false;
+// }
+
 export function limitedManySolution(matrix) {
     for (let col = 1; col < matrix[0].length; col++) {
         if (hasPairInRow(localLegend.columns[col]) >= 0 && matrix[0][col] === 0) {
-            if (matrix.slice(1).filter(x => x[col] > 0).length === (matrix.length - 1)) {
+            if (matrix.slice(1).filter(x => x[col] > 0).length >= 1) {
                 return {
                     text: "Zbiór ograniczony - wiele rozwiązań",
                 };

@@ -51,7 +51,7 @@ export var examples = [
             variables: [1, -2], sign: "geq", value: 2,
         },]
     },
-    {//Jedno rozwiązanie - x0=-1 x1=-0.5 x2=0
+    {//Zbiór ograniczony - wiele rozwiązań
         parameters: {
             variables: 2,
             limitations: 2,
