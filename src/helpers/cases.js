@@ -22,20 +22,6 @@ export function SimplexEnd(iteration) {
     return false;
 }
 
-// export function limitedManySolution(matrix) {
-//     for (let col = 1; col < matrix[0].length; col++) {
-//         if (hasPairInRow(localLegend.columns[col]) >= 0 && matrix[0][col] === 0) {
-//             if (matrix.slice(1).filter(x => x[col] > 0).length === (matrix.length - 1)) {
-//                 return {
-//                     text: "Zbiór ograniczony - wiele rozwiązań",
-//                 };
-//             }
-//         }
-//     }
-//
-//     return false;
-// }
-
 export function limitedManySolution(matrix) {
     for (let col = 1; col < matrix[0].length; col++) {
         if (hasPairInRow(localLegend.columns[col]) >= 0 && matrix[0][col] === 0) {
@@ -52,12 +38,14 @@ export function limitedManySolution(matrix) {
 
 export function oneSolution(matrix) {
     if (!limitedManySolution(matrix)) {
-        if (matrix[0].slice(1).filter(x => x >= 0).length === matrix[0].length-1) {
-            return {
-                text: "Istnieje jedno rozwiązanie optymalne",
-                value: matrix[0][0],
-                variables: getVariablesValues(matrix)
-            };
+        if (!unlimitedManySolutions(matrix)) {
+            if (matrix[0].slice(1).filter(x => x >= 0).length === matrix[0].length - 1) {
+                return {
+                    text: "Istnieje jedno rozwiązanie optymalne",
+                    value: matrix[0][0],
+                    variables: getVariablesValues(matrix)
+                };
+            }
         }
     }
     return false;
@@ -80,6 +68,7 @@ export function unlimitedNoSolutions(matrix) {
 export function unlimitedManySolutions(matrix) {
     for (let col = 1; col < matrix[0].length; col++) {
         if (hasPairInRow(localLegend.columns[col]) >= 0 && matrix[0][col] === 0) {
+            console.log("test");
             if (matrix.slice(1).filter(x => x[col] <= 0).length === (matrix.length - 1)) {
                 return {
                     text: "Zbiór nieograniczony - wiele rozwiązań",
@@ -138,7 +127,7 @@ function getVariablesValues(matrix) {
 
 export function hasPairInRow(legendItem) {
     if (legendItem.substr(0, 1) === "U") {
-        return false;
+        return true;
     }
 
     let number = Number(legendItem.substr(1));

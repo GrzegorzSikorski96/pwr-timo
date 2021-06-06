@@ -13,6 +13,18 @@ export var examples = [
             variables: [6, 2], sign: "leq", value: 21,
         },]
     },
+    { // Nieograniczony - wiele rozwiązań
+        parameters: {
+            variables: 2,
+            limitations: 2,
+        },
+        base: [-2, 4],
+        limitations: [{
+            variables: [2, 1], sign: "leq", value: -4,
+        }, {
+            variables: [-1, 2], sign: "leq", value: -1,
+        },]
+    },
     {// Jedno rozwiązanie - x0=-6 x1=-2  x2=-2
         parameters: {
             variables: 2,
