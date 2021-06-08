@@ -18,11 +18,11 @@ export var examples = [
             variables: 2,
             limitations: 2,
         },
-        base: [-2, 4],
+        base: [4, 2],
         limitations: [{
-            variables: [2, 1], sign: "leq", value: -4,
+            variables: [-1, 1], sign: "leq", value: 4,
         }, {
-            variables: [-1, 2], sign: "leq", value: -1,
+            variables: [-2, -1], sign: "geq", value: 6,
         },]
     },
     {// Jedno rozwiązanie - x0=-6 x1=-2  x2=-2
@@ -66,13 +66,15 @@ export var examples = [
     {//Zbiór ograniczony - wiele rozwiązań
         parameters: {
             variables: 2,
-            limitations: 2,
+            limitations: 3,
         },
-        base: [2, 1],
+        base: [-4, 2],
         limitations: [{
-            variables: [-4, 3], sign: "leq", value: 2,
+            variables: [-4, 2], sign: "leq", value: 4,
         }, {
-            variables: [-2, -1], sign: "geq", value: 1,
+            variables: [2, -3], sign: "leq", value: 3,
+        }, {
+            variables: [3, 2], sign: "leq", value: 6,
         },]
     },
     {//Jedno rozwiązanie - x0=3.249 x1=-3.75 x2=-3.501

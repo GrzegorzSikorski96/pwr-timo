@@ -24,11 +24,21 @@ export function SimplexEnd(iteration) {
 
 export function limitedManySolution(matrix) {
     for (let col = 1; col < matrix[0].length; col++) {
-        if (hasPairInRow(localLegend.columns[col]) >= 0 && matrix[0][col] === 0) {
-            if (matrix.slice(1).filter(x => x[col] > 0).length >= 1) {
-                return {
-                    text: "Zbiór ograniczony - wiele rozwiązań",
-                };
+        if (!(localLegend.columns[col].substr(0, 1) === "U")) {
+            if (hasPairInRow(localLegend.columns[col]) >= 0 && matrix[0][col] === 0) {
+                    if (matrix.slice(1).filter(x => (x[col] - x[hasPairInRow(localLegend.columns[col])]) > 0).length >= 1) {
+                        return {
+                            text: "Zbiór ograniczony - wiele rozwiązań",
+                        };
+                    }
+            }
+        } else {
+            if (matrix[0][col] === 0) {
+                if (matrix.slice(1).filter(x => x[col] > 0).length >= 1) {
+                    return {
+                        text: "Zbiór ograniczony - wiele rozwiązań",
+                    };
+                }
             }
         }
     }
@@ -67,11 +77,20 @@ export function unlimitedNoSolutions(matrix) {
 
 export function unlimitedManySolutions(matrix) {
     for (let col = 1; col < matrix[0].length; col++) {
-        if (hasPairInRow(localLegend.columns[col]) >= 0 && matrix[0][col] === 0) {
-            console.log("test");
-            if (matrix.slice(1).filter(x => x[col] <= 0).length === (matrix.length - 1)) {
-                return {
-                    text: "Zbiór nieograniczony - wiele rozwiązań",
+        if (!(localLegend.columns[col].substr(0, 1) === "U")) {
+            if (hasPairInRow(localLegend.columns[col]) >= 0 && matrix[0][col] === 0) {
+                if (matrix.slice(1).filter(x => (x[col] + x[hasPairInRow(localLegend.columns[col])]) <= 0).length === (matrix.length - 1)) {
+                    return {
+                        text: "Zbiór nieograniczony - wiele rozwiązań",
+                    };
+                }
+            }
+        } else {
+            if (matrix[0][col] === 0) {
+                if (matrix.slice(1).filter(x => x[col] <= 0).length === (matrix.length - 1)) {
+                    return {
+                        text: "Zbiór nieograniczony - wiele rozwiązań",
+                    };
                 }
             }
         }
